@@ -6,6 +6,7 @@ const Form = ({ type }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [country, setCountry] = useState('+91');
     const [isLoading, setIsLoading] = useState(false);
+    const [show, setShow] = useState('');
 
     const handleNameChange = (event) => {
         const value = event.target.value;
@@ -31,6 +32,22 @@ const Form = ({ type }) => {
         setName('');
         setCountry('+91');
         setPhoneNumber('');
+        fetch('http://localhost:8081/createUser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ column1: name, column2: country, column3: phoneNumber })
+        })
+            .then(() => {
+                setIsLoading(false);
+                setShow('green');
+            })
+            .catch(error => { 
+                setIsLoading(false);
+                setShow('red');
+                console.error('Error:', error);
+            });
     }
 
     console.log(country);
@@ -98,7 +115,7 @@ const Form = ({ type }) => {
                     className='p-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-300 ease-in-out'
                     type='submit'
                 >
-                    Submit Details
+                    {isLoading ? 'Submitting...' : 'Submit Details'}
                 </button>
             </form>
         </div >
